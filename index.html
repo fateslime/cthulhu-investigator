@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101b1d">
+  <title>霧港來信 — 單人調查檔案</title>
+  <link rel="stylesheet" href="style.css"><link rel="stylesheet" href="field-ui.css">
+  <script defer src="engine.js"></script>
+  <script defer src="story-recaps.js"></script>
+  <script defer src="pressure-data.js"></script><script defer src="pressure-engine.js"></script><script defer src="field-ui.js"></script><script defer src="app.js"></script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <header class="topbar"><a href="#" id="brand" aria-label="霧港來信首頁">FH<span>霧港來信</span></a><span class="edition">AN INVESTIGATION IN THE FOG · 1926</span><button id="help">遊玩指南 <span>↗</span></button></header>
+  <main id="app"></main>
+  <footer><span>霧港檔案室 / 第一號案件</span><span>原創劇本 · CoC 7 版核心機制 · 離線遊玩</span></footer>
+  <dialog id="modal"><div class="dialog-toolbar"><button type="button" class="close" aria-label="關閉視窗" title="關閉視窗（Esc）"><span aria-hidden="true">×</span>關閉</button></div><div id="modal-body" class="dialog-body" tabindex="0" role="region" aria-label="閱讀內容"></div></dialog>
+  <div id="toast" role="status"></div>
+  <input type="file" id="import-file" accept="application/json,.json" hidden>
+  <noscript>請啟用瀏覽器 JavaScript 才能遊玩《霧港來信》。</noscript>
+</body>
+</html>

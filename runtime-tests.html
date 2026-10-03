@@ -1,0 +1,20 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Runtime validation</title></head><body><pre id="results"></pre>
+<script src="engine.js"></script><script src="chronicles-data.js"></script><script src="story-asylum.js"></script><script src="story-train.js"></script><script src="story-tide.js"></script><script src="story-theatre.js"></script><script src="story-recaps.js"></script><script src="chronicles-branches.js"></script><script src="chronicles-engine.js"></script><script src="theatre-engine.js"></script><script src="dialogue-adapter.js"></script><script src="hub-store.js"></script>
+<script src="tests.js"></script><script src="chronicles-tests.js"></script><script src="expansion-tests.js"></script>
+<script src="pressure-data.js"></script><script src="pressure-engine.js"></script><script src="pressure-tests.js"></script>
+<script src="ui-smoke.js"></script><script src="portal-smoke.js"></script><script src="dialogue-tests.js"></script>
+<script>
+(async function(){
+ const results=[...FogTests,...ChroniclesTests,...ExpansionTests,...PressureTests];
+ const pressure=window.Pressure;delete window.Pressure;
+ try {
+  const files=['engine.js','chronicles-data.js','story-asylum.js','story-train.js','story-tide.js','story-theatre.js','story-recaps.js','chronicles-branches.js','chronicles-engine.js','theatre-engine.js','dialogue-adapter.js','hub-store.js'];
+  const source={};await Promise.all([...files,'app.js','portal.js','legacy-source.js'].map(async name=>source[name]=await(await fetch(name)).text()));
+  results.push(...runFogUISmoke(source['engine.js'],source['app.js'],source['story-recaps.js']));
+  results.push(...await runPortalSmoke(files.map(k=>source[k]).join('\n'),source['portal.js'],source['legacy-source.js']));
+  results.push(...await runDialogueAdapterTests());
+ }catch(e){results.push({name:'Additional regression suite',pass:false,error:e.stack});}
+ finally{window.Pressure=pressure;window.RUNTIME_RESULTS=results;document.getElementById('results').textContent=JSON.stringify(results,null,2);}
+})();
+</script>
+</body></html>

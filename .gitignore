@@ -1,0 +1,19 @@
+# Built offline bundles; rebuild from source.
+/Cthulhu-Play.html
+/Fogharbor-Play.html
+/Fogharbor-Original.html
+/legacy-source.js
+/desktop/vendor/
+/desktop/dist/
+*.zip
+*.log
+*.user
+.DS_Store
+Thumbs.db
+/test-output/
+# Do not commit user saves or credentials.
+*-調查存檔.json
+*-調查員備份.json
+.env
+.env.*
+!.env.example

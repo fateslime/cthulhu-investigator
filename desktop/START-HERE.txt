@@ -1,0 +1,19 @@
+克蘇魯的呼喚 — 調查員檔案室 / Windows x64 桌面版
+
+1. 將 ZIP 完整解壓縮到一個資料夾。
+2. 開啟 Cthulhu-Investigator.exe；DLL 與 content 資料夾必須一起保留。
+3. 建立本機檔案名称，選故事，保留預設角色即可開始。
+4. 底部「選擇下一步」隨時開啟分支；地圖、推理也不必滑到頁尾。
+5. 閱讀不倒數；只有行動消耗世界時間。請留意畫面顯示的下次危機與撤離期限。
+
+本機資料位於 %LOCALAPPDATA%\CthulhuInvestigator\WebView2。
+瀏覽器版與桌面版的儲存空間不同：先從舊版「匯出備份」，再在桌面版「匯入」。
+更新應用程式不必刪除上述存檔資料夾。請定期匯出 JSON 備份。
+本機登入沒有密碼，也不是 GitHub 登入。
+
+需要 Windows x64、.NET Framework 4.6.2 或更新版本及 Microsoft Edge WebView2 Evergreen Runtime。
+WebView2 官方下載：https://developer.microsoft.com/microsoft-edge/webview2/
+遊戲內容與預設對話皆可離線使用。AI 對話仍使用離線模式，未連接付費模型。
+
+本作使用 CoC 第七版核心判定；危機、補給、事件與角色配點是原創情境規則。
+非 Chaosium 官方授權產品，未包含官方規則書、官方劇本或官方美術。
