@@ -172,8 +172,15 @@ namespace Investigator {
                     await web.CoreWebView2.ExecuteScriptAsync("document.querySelector('#dice-overlay')?.close()");
                     ClientSize = new Size(420, 760);
                     await Task.Delay(250);
-                    var mobile = await web.CoreWebView2.ExecuteScriptAsync("JSON.stringify(checkCompactLayout())");
+                    await web.CoreWebView2.ExecuteScriptAsync("window.COMPACT_RESULTS=checkCompactLayout()");
                     using (var image = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "compact-preview.png"))) await web.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, image);
+                    await web.CoreWebView2.ExecuteScriptAsync("document.querySelector('#hub-close').click();document.querySelector('[data-ui=\"library\"]').click();document.querySelector('[data-story=\"fog\"]').click()");
+                    for (int i = 0; i < 100; i++) {
+                        if (await web.CoreWebView2.ExecuteScriptAsync("!!document.querySelector('#legacy-game')?.contentWindow?.Cinema") == "true") break;
+                        await Task.Delay(50);
+                    }
+                    var mobile = await web.CoreWebView2.ExecuteScriptAsync("COMPACT_RESULTS.push(...checkLegacyCompactLayout());JSON.stringify(COMPACT_RESULTS)");
+                    using (var image = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "original-compact-preview.png"))) await web.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, image);
                     File.WriteAllText(output, "{\"rules\":" + rules + ",\"ui\":" + ui + ",\"cinematic\":" + cinematic + ",\"resolutions\":" + resolutions + ",\"compact\":" + mobile + ",\"nativeDpiScale\":" + nativeScale.ToString(CultureInfo.InvariantCulture) + "}");
                     Close();
                 }

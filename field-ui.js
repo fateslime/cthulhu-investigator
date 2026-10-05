@@ -8,5 +8,6 @@
   if(s.finale)return '';return '<details class="field-opportunities"><summary>補給與限時機會'+(p.opportunity==='open'?' · 聯絡窗口仍開放':'')+'</summary>'+(p.opportunity==='open'?button('opportunity','趕上聯絡窗口',(s.story?'支援＋2、':'')+'補給＋1 · 20分鐘 · 本章一次',p.spent+20>Math.ceil(p.budget/2)):'<p class="subtle">本章聯絡機會'+(p.opportunity==='taken'?'已使用。':'已結束。')+'</p>')+button('resupply','花時間整備補給','40分鐘，補給＋2；補給達5後不可再整備',p.supplies>=5)+'</details>';
  }
  function dock(s){if(s.ending)return '';const d=Pressure.describe(s);return '<nav class="action-dock" aria-label="隨時行動"><span class="dock-status">'+(Pressure.blocked(s)?'有突發事件待處理':d.stage)+'<small>'+d.remaining+' 分鐘窗口 · 補給 '+s.pressure.supplies+'</small></span><button class="primary" data-ui="action-menu">'+(s.combat?'戰鬥行動':Pressure.blocked(s)?'處理事件':'選擇下一步')+'</button><button data-ui="quick-map">地圖</button><button data-ui="'+(s.story?'board':'journal')+'">'+(s.story?'推理':'紀錄')+'</button></nav>';}
- root.FieldUI={art,panel,choices,dock};
+ function brief(s){const d=Pressure.describe(s);return '<details class="action-deadline"><summary>'+(s.pressure.stage===3?'撤離剩 '+d.escape:'調查剩 '+d.remaining)+' 分鐘 · 補給 '+s.pressure.supplies+' · 查看危機</summary>'+panel(s)+'</details>';}
+ root.FieldUI={art,panel,brief,choices,dock};
 })(globalThis);

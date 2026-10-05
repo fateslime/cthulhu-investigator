@@ -45,5 +45,7 @@ function checkCompactLayout(){
  document.querySelector('[data-ui="action-menu"]')?.click();
  const modal=document.querySelector('#hub-modal'),close=document.querySelector('#hub-close').getBoundingClientRect();
  out.push({name:'Compact action menu and close control are usable',pass:modal.open&&close.right<=innerWidth&&close.top>=0});
+ const first=modal.querySelector('button[data-action],button[data-pressure]')?.getBoundingClientRect(),reading=modal.querySelector('.dialog-body').getBoundingClientRect();
+ out.push({name:'Compact action menu shows a choice without scrolling',pass:!!first&&first.top>=reading.top&&first.bottom<=reading.bottom});
  return out;
 }

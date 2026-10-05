@@ -51,7 +51,7 @@
       if(button.dataset.combat){F.combatAct(state,button.dataset.combat);save();renderGame();return;}
       switch(button.dataset.ui){
         case 'tools':dialog(Cinema.tools(state));break;
-        case 'action-menu':dialog('<section class="action-menu"><h2>下一步行動</h2>'+FieldUI.panel(state)+actionsHTML()+(!Pressure.blocked(state)?FieldUI.choices(state):'')+'</section>');break;
+        case 'action-menu':dialog('<section class="action-menu"><h2>下一步行動</h2>'+FieldUI.brief(state)+actionsHTML()+(!Pressure.blocked(state)?FieldUI.choices(state):'')+'</section>');break;
         case 'quick-map':dialog('<h2>前往何處？</h2><p>每次移動30分鐘。</p><div class="quick-map">'+Object.entries(F.PLACES).map(([k,l])=>'<button data-travel="'+k+'" '+(k===state.place||state.combat||state.pending||Pressure.blocked(state)||state.ending||(k==='tower'&&!state.clues.length)?'disabled':'')+'>'+l.name+' · 30分鐘</button>').join('')+'</div>');break;
         case 'new':case 'replay':startBuild();break;
         case 'home':if(state)save();home();break;

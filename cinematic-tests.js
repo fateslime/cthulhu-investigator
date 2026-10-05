@@ -18,6 +18,9 @@ async function runCinematicTests(){
   const preferences=JSON.parse(localStorage.getItem('cthulhu-display-v1'));assert(preferences.text==='largest'&&preferences.contrast,'Display preferences persist locally');
   click('[data-cinema="contrast"]');click('[data-text-size-choice="standard"]');click('[data-cinema="close-settings"]');
   assert(JSON.stringify(game())===beforeSettings,'Display settings do not change game state or time');
+  click('[data-ui="journal"]');assert(getComputedStyle(document.documentElement).overflowY==='hidden','Reading a dialog locks background page scrolling');
+  const reading=document.querySelector('#hub-modal .dialog-body');reading.scrollTop=reading.scrollHeight;assert(reading.scrollTop>0&&document.querySelector('#hub-close').getBoundingClientRect().top>=0,'Long journal scrolls with its close button visible');click('#hub-close');
+  assert(getComputedStyle(document.documentElement).overflowY!=='hidden','Closing the dialog restores page scrolling');
   click('.case-actions [data-ui="tools"]');assert(document.querySelector('#hub-modal').open,'Investigator toolkit opens');
   click('#hub-modal [data-ui="sheet"]');assert(document.querySelector('#hub-modal-body').textContent.includes('角色卡'),'Toolkit commands retain original functionality');click('#hub-close');
   document.body.dispatchEvent(new KeyboardEvent('keydown',{key:'m',bubbles:true}));assert(document.querySelector('#hub-modal').open&&document.querySelector('#hub-modal-body h2').textContent.includes('何處'),'Map keyboard shortcut works');click('#hub-close');
@@ -45,10 +48,15 @@ async function runCinematicTests(){
   assert(JSON.stringify(game())===afterCheck,'Presentation fixtures leave persisted investigation unchanged');fixture.remove();fixture=null;
   click('[data-ui="library"]');await wait(()=>document.querySelector('.library-spotlight'));assert(document.querySelectorAll('.story-card').length===5,'Redesigned library retains all five stories');click('[data-story="theatre"]');await new Promise(r=>setTimeout(r,40));assert(!document.querySelector('#dice-overlay').open,'Loading an existing save does not replay old rolls');
   click('[data-ui="library"]');click('[data-story="fog"]');await wait(()=>document.querySelector('#legacy-game')?.contentWindow?.Cinema);
+  const embedded=document.querySelector('#legacy-game'),frameBox=embedded.getBoundingClientRect();
+  assert(document.documentElement.classList.contains('legacy-view')&&frameBox.bottom<=innerHeight+1&&getComputedStyle(document.documentElement).overflowY==='hidden','Original game has no outer page scrollbar');
+  assert(embedded.contentDocument.documentElement.classList.contains('embedded-investigation')&&embedded.contentWindow.getComputedStyle(embedded.contentDocument.querySelector('.topbar')).display==='none','Original game avoids a duplicate header');
   const original=document.querySelector('#legacy-game').contentWindow;Cinema.settings();click('[data-cinema="dice"]');click('[data-text-size-choice="large"]');await wait(()=>original.document.documentElement.dataset.textSize==='large');original.Cinema.settings();
   assert(original.document.querySelector('[data-cinema="dice"]').getAttribute('aria-pressed')==='false','Outer display settings sync into the original story iframe');
   click('[data-cinema="dice"]');click('[data-text-size-choice="standard"]');await wait(()=>original.document.querySelector('[data-cinema="dice"]').getAttribute('aria-pressed')==='true');assert(original.document.documentElement.dataset.textSize==='standard','Original story reflects re-enabled dice and restored text size');original.document.querySelector('#display-options').close();click('[data-cinema="close-settings"]');click('[data-ui="library"]');click('[data-story="theatre"]');
   window.scrollTo(0,0);
+  await wait(()=>!document.documentElement.classList.contains('legacy-view'));
+  assert(getComputedStyle(document.documentElement).overflowY!=='hidden','Returning from original game restores the normal page');
  }catch(e){out.push({name:'Cinematic integration exception',pass:false,error:e.stack});}
  finally{fixture?.remove();document.querySelector('#dice-overlay[open]')?.close();document.querySelector('#display-options[open]')?.close();}
  return out;
@@ -59,11 +67,23 @@ function checkCinematicLayout(label){
  const viewport=document.documentElement.clientWidth,hud=document.querySelector('.mission-hud').getBoundingClientRect(),header=document.querySelector('.topbar').getBoundingClientRect(),dock=document.querySelector('.action-dock').getBoundingClientRect();
  const expected=label.split('x').map(Number);add('Requested CSS viewport is active',innerWidth===expected[0]&&innerHeight===expected[1]);
  add('No horizontal page overflow',document.documentElement.scrollWidth<=innerWidth+1,{width:innerWidth,height:innerHeight,dpr:devicePixelRatio});
+ const nested=Array.from(document.querySelectorAll('.workspace *')).filter(el=>el.clientHeight>0&&el.scrollHeight>el.clientHeight+1&&/auto|scroll/.test(getComputedStyle(el).overflowY));
+ add('Investigation has no nested vertical scroll regions',nested.length===0,nested.map(el=>el.className));
  add('Status HUD is below the header',hud.top>=header.bottom-1&&hud.bottom<innerHeight);
  add('Action dock fits viewport',dock.left>=0&&dock.right<=viewport+1&&dock.bottom<=innerHeight+1);
  add('Health sanity and deadline remain visible',Array.from(document.querySelectorAll('.hud-stat,.hud-deadline')).every(el=>{const b=el.getBoundingClientRect();return b.left>=0&&b.right<=viewport+1&&b.bottom<=hud.bottom+1;}));
  if(innerWidth>800){const rail=document.querySelector('.action-rail');add('Desktop actions available in side panel',!!rail&&getComputedStyle(rail).display!=='none'&&!!rail.querySelector('button[data-action],button[data-pressure]'));}
  return out;
+}
+function checkLegacyCompactLayout(){
+ const frame=document.querySelector('#legacy-game'),win=frame.contentWindow,doc=frame.contentDocument;
+ if(!doc.querySelector('.workspace'))doc.querySelector('[data-ui="continue"]')?.click();
+ const dock=doc.querySelector('.action-dock')?.getBoundingClientRect(),nested=Array.from(doc.querySelectorAll('.workspace *')).filter(el=>el.clientHeight>0&&el.scrollHeight>el.clientHeight+1&&/auto|scroll/.test(win.getComputedStyle(el).overflowY));
+ return [
+  {name:'Compact original story fits without outer page scrolling',pass:frame.getBoundingClientRect().bottom<=innerHeight+1&&getComputedStyle(document.documentElement).overflowY==='hidden'},
+  {name:'Compact original story keeps its action dock reachable',pass:!!dock&&dock.bottom<=win.innerHeight+1&&dock.top>=0},
+  {name:'Compact original story has no nested vertical panels',pass:!!doc.querySelector('.workspace')&&nested.length===0}
+ ];
 }
 function prepareDicePreview(){
  document.querySelectorAll('dialog[open]').forEach(d=>d.close());const build={preset:1,job:'detective',name:'預覽',background:'',...Fog.allocate(1,'detective')},s=Fog.newGame(build,()=>2),host=document.createElement('div');host.hidden=true;host.innerHTML='<div class="workspace"><section class="story-column"></section></div>';document.body.appendChild(host);Cinema.mount(host,s);let values=[1,1,5];Fog.check(s,65,'偵查 · 燈塔窗後的痕跡',1,1,()=>values.shift());Cinema.mount(host,s);
