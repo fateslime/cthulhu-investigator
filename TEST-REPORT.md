@@ -1,10 +1,10 @@
 # 驗證報告
 
-日期：2026-10-03。版本：五故事危機系統、62 個事件、五张插畫、常駐行動列與 Windows x64 桌面應用程式。
+日期：2026-10-05。版本：電影風格介面、可開關百分骰動畫、Windows 高 DPI 與全螢幕；保留五故事危機系統。
 
 ## 測試結果
 
-在實際 Windows WebView2 執行環境中執行，**825 / 825 通過**。
+在實際 Windows WebView2 執行環境中執行，**890 / 890 通過**。
 
 | 測試組 | 通過 |
 |---|---:|
@@ -16,10 +16,25 @@
 | 預留 AI 介面非同步測試 | 9 / 9 |
 | 新危機系統與完整通關 | 68 / 68 |
 | 實際桌面瀏覽器介面 | 32 / 32 |
+| 新版介面、設定與真實百分骰動畫 | 40 / 40 |
+| 四組指定視口排版與原生全螢幕 | 25 / 25 |
 | 窄視窗排版 | 3 / 3 |
-| 合計 | **825 / 825** |
+| 合計 | **890 / 890** |
 
 前六組為原有模組回歸測試；新危機組額外驗證完整接入後的實際行為。原始結果由桌面程式 `--self-test` 寫入 `desktop/dist/Cthulhu-Investigator/runtime-test-results.json`。
+
+## 2026-10-05 新介面與骰子驗證
+
+- 真實調查行動產生引擎檢定、保存結果並開啟動畫；揭示值、成功等級與骰子數均與紀錄一致。
+- 00＋0＝100、01 大成功、一／兩顆獎勵骰、懲罰骰及同一行動多次檢定。
+- 略過、關閉、停用、重新啟用與讀檔：不重擲、不額外扣時間，不播放旧骰子；設定獨立保存。
+- 24 px 字級、高對比、調查工具與鍵盤地圖；外層顯示設定即時同步至原作 iframe。
+- 使用 WebView2 的 DevTools 視口模擬驗證 1366 × 768、1920 × 1080、2560 × 1440、3840 × 2160；逐組斷言實際 `innerWidth/innerHeight`，避免視窗受實體螢幕限制而誤報。截圖為對應像素大小。
+- 每組檢查水平溢出、固定狀態列、生命／理智／期限、底部行動列與桌面選项；另驗證 420 × 760 窄視窗。
+- 原生 WebView2 訊息觸發全螢幕，再次操作恢復原視窗邊界。測試主機原生 DPI 比例為 2.5；指定 CSS 視口測試時獨立控制縮放。
+- 已目視檢查主遊戲、劇本庫、骰子、窄視窗及 4K 模擬截圖。未驗證實體多螢幕拖曳切換，也未將既有插畫提升為原生 4K。
+
+Windows DPI 設定參照 [Microsoft WinForms 高 DPI 文件](https://learn.microsoft.com/zh-tw/dotnet/desktop/winforms/high-dpi-support-in-windows-forms)。視口模擬與截圖使用 Chromium 的 [Emulation](https://chromedevtools.github.io/devtools-protocol/tot/Emulation/) 和 [Page](https://chromedevtools.github.io/devtools-protocol/tot/Page/) 協定。
 
 ## 危機系統實際驗證
 
@@ -54,7 +69,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\desktop\build-desktop.ps1
 .\desktop\dist\Cthulhu-Investigator\Cthulhu-Investigator.exe --self-test
 ```
 
-原始碼的 `runtime-tests.html` 可在本機 HTTP 服務下執行規則與模擬 DOM 測試。桌面 `--self-test` 額外注入 `runtime-ui-tests.js` 測試真實 DOM 與排版；一般啟動不執行測試，也不開啟開發工具。
+原始碼的 `runtime-tests.html` 可在本機 HTTP 服務下執行規則與模擬 DOM 測試。桌面 `--self-test` 額外注入 `runtime-ui-tests.js` 與 `cinematic-tests.js` 測試真實 DOM、骰子與排版；一般啟動不執行測試，也不開啟開發工具。
 
 ## 適用範圍
 

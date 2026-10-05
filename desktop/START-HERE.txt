@@ -5,13 +5,16 @@
 3. 建立本機檔案名称，選故事，保留預設角色即可開始。
 4. 底部「選擇下一步」隨時開啟分支；地圖、推理也不必滑到頁尾。
 5. 閱讀不倒數；只有行動消耗世界時間。請留意畫面顯示的下次危機與撤離期限。
+6. 右上角「顯示設定」可調整字級、高對比、全螢幕，以及開關檢定擲骰動畫。
+7. 擲骰畫面可略過動畫或關閉，不會重擲或多花時間；同一行動有多次檢定時可逐一查看。
+8. 桌面右側行動面板可直接選分支。快捷鍵：I 行動、M 地圖、J 紀錄。
 
 本機資料位於 %LOCALAPPDATA%\CthulhuInvestigator\WebView2。
 瀏覽器版與桌面版的儲存空間不同：先從舊版「匯出備份」，再在桌面版「匯入」。
 更新應用程式不必刪除上述存檔資料夾。請定期匯出 JSON 備份。
 本機登入沒有密碼，也不是 GitHub 登入。
 
-需要 Windows x64、.NET Framework 4.6.2 或更新版本及 Microsoft Edge WebView2 Evergreen Runtime。
+需要 Windows x64、.NET Framework 4.7.2 或更新版本及 Microsoft Edge WebView2 Evergreen Runtime。
 WebView2 官方下載：https://developer.microsoft.com/microsoft-edge/webview2/
 遊戲內容與預設對話皆可離線使用。AI 對話仍使用離線模式，未連接付費模型。
 

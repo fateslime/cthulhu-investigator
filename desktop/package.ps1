@@ -5,7 +5,7 @@ $release = Join-Path $PSScriptRoot 'dist/release'
 $stage = Join-Path $release ('stage-' + [Guid]::NewGuid().ToString('N'))
 $app = Join-Path $stage 'Cthulhu-Investigator'
 New-Item -ItemType Directory -Force -Path $app | Out-Null
-foreach ($name in @('Cthulhu-Investigator.exe','Microsoft.Web.WebView2.Core.dll','Microsoft.Web.WebView2.WinForms.dll','WebView2Loader.dll','WEBVIEW2-LICENSE.txt','START-HERE.txt')) {
+foreach ($name in @('Cthulhu-Investigator.exe','Cthulhu-Investigator.exe.config','Microsoft.Web.WebView2.Core.dll','Microsoft.Web.WebView2.WinForms.dll','WebView2Loader.dll','WEBVIEW2-LICENSE.txt','START-HERE.txt')) {
     Copy-Item -LiteralPath (Join-Path $dist $name) -Destination $app
 }
 Copy-Item -LiteralPath (Join-Path $dist 'content') -Destination $app -Recurse
