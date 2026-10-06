@@ -182,6 +182,7 @@ namespace Investigator {
                     var mobile = await web.CoreWebView2.ExecuteScriptAsync("COMPACT_RESULTS.push(...checkLegacyCompactLayout());JSON.stringify(COMPACT_RESULTS)");
                     using (var image = File.Create(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "original-compact-preview.png"))) await web.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, image);
                     File.WriteAllText(output, "{\"rules\":" + rules + ",\"ui\":" + ui + ",\"cinematic\":" + cinematic + ",\"resolutions\":" + resolutions + ",\"compact\":" + mobile + ",\"nativeDpiScale\":" + nativeScale.ToString(CultureInfo.InvariantCulture) + "}");
+                    Environment.ExitCode = TestResults.AllPassed(rules, ui, cinematic, resolutions, mobile) ? 0 : 1;
                     Close();
                 }
             } catch (Exception ex) { File.WriteAllText(output, "ERROR: " + ex.ToString()); Environment.ExitCode = 1; Close(); }

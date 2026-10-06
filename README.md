@@ -2,6 +2,14 @@
 
 五個可離線遊玩的繁體中文故事：原作《霧港來信》，以及按年代相連的原創「回聲三部曲」，以及獨立劇院新篇。採CoC第七版核心百分骰機制，由程式擔任單人守密人。
 
+## 開發者／AI 接手入口
+
+先讀 [AGENTS.md](AGENTS.md) 與 [目前交接狀態](docs/STATE.md)，再依任務選讀 [架構地圖](docs/ARCHITECTURE.md)、[存檔與行為契約](docs/CONTRACTS.md)。不要一次讀取全部劇本或生成 HTML。
+
+執行 `powershell -NoProfile -ExecutionPolicy Bypass -File maintenance/context.ps1 -Area ui -Symbols` 可取得指定領域的有限長度索引；將 ui 換成 overview、rules、stories、pressure、saves、dialogue、desktop、build、tests 或 maintenance。
+
+完整維護流程見 [維護手冊](docs/MAINTENANCE.md)；本次風險、已處理問題與後續重構次序見 [架構稽核](docs/AUDIT-2026-10-06.md)。新增模組、搬動入口或改變載入順序時更新 `maintenance/project.json`，建置前會自動核對。
+
 ## 2026-10-05：新版電影風格介面與可開關的百分骰動畫
 
 - **遊戲畫面改為單一捲動：**左右地圖與行動面板取消獨立捲軸，內容隨整頁一起移動。縮小標題列與場景橫幅，增加劇情和選項的可見空間。長文視窗開啟時鎖住背景，只捲動正在閱讀的內容；關閉後回到原頁面位置。《霧港來信》只保留內嵌遊戲的頁面捲動，移除外層重複捲軸與標題。
@@ -46,15 +54,12 @@
 # 建立包含圖片的離線 HTML；產物不提交到 Git。
 powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1
 
-# 建立 Windows x64 桌面程式；首次下載固定版本 WebView2 SDK。
-powershell -NoProfile -ExecutionPolicy Bypass -File .\desktop\build-desktop.ps1
-
-# 執行真實 WebView2 + 規則與介面測試，使用獨立測試存檔。
-.\desktop\dist\Cthulhu-Investigator\Cthulhu-Investigator.exe --self-test
-
-# 打包乾淨的桌面版與瀏覽器版，不包含測試個人資料。
-powershell -NoProfile -ExecutionPolicy Bypass -File .\desktop\package.ps1
+# 一次完成架構檢查、工具自測、桌面建置、WebView2 測試與打包。
+# 首次建置下載固定版本 WebView2 SDK；測試使用獨立存檔。
+powershell -NoProfile -ExecutionPolicy Bypass -File .\maintenance\verify.ps1 -Package
 ```
+
+驗證成功後，`test-output/verification.json` 記錄當次來源及建置產物指紋。缺失、空白或失敗的測試組會阻止打包；直接執行 `desktop/package.ps1` 也要求相同指紋的通過紀錄。需要單獨診斷時仍可使用 `desktop/build-desktop.ps1` 與 EXE 的 `--self-test`，但這兩步不會產生維護流程的打包憑據。
 
 桌面殼使用 Windows 自帶的 .NET Framework C# 編譯器，不需安裝 Node.js、npm 或 .NET SDK。WebView2 SDK 固定為 `1.0.4191.47`，下載來源為官方 NuGet 套件。SDK、編譯產物、使用者進度與測試資料夾均由 `.gitignore` 排除。測試報告見 [TEST-REPORT.md](TEST-REPORT.md)，插畫提示詞見 [assets/ART-PROMPTS.md](assets/ART-PROMPTS.md)。
 

@@ -20,7 +20,7 @@ if (-not (Test-Path $compiler)) { throw 'Windows .NET Framework 4.x C# compiler 
 $references = @('System.dll','System.Core.dll','System.Windows.Forms.dll','System.Drawing.dll','System.Web.Extensions.dll',(Join-Path $sdk 'lib/net462/Microsoft.Web.WebView2.Core.dll'),(Join-Path $sdk 'lib/net462/Microsoft.Web.WebView2.WinForms.dll'))
 $compilerArgs = @('/nologo','/target:winexe','/platform:x64','/optimize+','/codepage:65001',('/win32manifest:'+(Join-Path $PSScriptRoot 'app.manifest')),('/out:'+(Join-Path $dist 'Cthulhu-Investigator.exe')))
 foreach ($reference in $references) { $compilerArgs += '/reference:' + $reference }
-& $compiler @compilerArgs (Join-Path $PSScriptRoot 'Program.cs')
+& $compiler @compilerArgs (Join-Path $PSScriptRoot 'Program.cs') (Join-Path $PSScriptRoot 'TestResults.cs')
 if ($LASTEXITCODE -ne 0) { throw 'Desktop app compilation failed.' }
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'App.config') -Destination (Join-Path $dist 'Cthulhu-Investigator.exe.config') -Force
 Copy-Item -LiteralPath (Join-Path $sdk 'lib/net462/Microsoft.Web.WebView2.Core.dll'),(Join-Path $sdk 'lib/net462/Microsoft.Web.WebView2.WinForms.dll'),(Join-Path $sdk 'runtimes/win-x64/native/WebView2Loader.dll') -Destination $dist -Force

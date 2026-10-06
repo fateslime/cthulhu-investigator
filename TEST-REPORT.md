@@ -1,6 +1,6 @@
 # 驗證報告
 
-日期：2026-10-05。版本：單一捲動調查介面、精簡行動視窗、可開關百分骰動畫、Windows 高 DPI 與全螢幕；保留五故事危機系統。
+日期：2026-10-06。版本：架構維護指令、有限上下文交接、測試失敗退出碼與驗證後打包；遊戲維持單一捲動介面及可開關骰子動畫。
 
 ## 測試結果
 
@@ -22,6 +22,18 @@
 | 合計 | **904 / 904** |
 
 前六組為原有模組回歸測試；新危機組額外驗證完整接入後的實際行為。原始結果由桌面程式 `--self-test` 寫入 `desktop/dist/Cthulhu-Investigator/runtime-test-results.json`。
+
+## 2026-10-06 維護系統驗證
+
+- 架構快檢：60 個登錄檔、2 個產品入口，來源存在、腳本／樣式順序、生成檔排除與短文件限制通過。
+- 維護工具自測：**30 / 30 通過**，與上表的 904 項遊戲測試分開計算。
+- 刻意測試錯序／重複 script、樣式不一致、缺組／空組／失敗／非法 pass 型別，以及 C# 對缺失與非法結果的失敗判定。
+- 測試未驗證、來源改變、建置產物改變時拒絕打包，及一致指紋可通過。
+- 測試 context 輸出預算截斷與未知領域拒絕；目前 ui 領域含函式索引的預設輸出約 4,000 字元，不包含圖片或生成 HTML 原始碼。
+- 完整流程使用 `maintenance/verify.ps1 -Package`；當次結果、來源 SHA-256 組合指紋及產物指紋記於 `test-output/verification.json`，不提交到 Git。
+- 桌面自檢現在會在任一組缺失、空白、格式非法或失敗時以非零狀態結束。封裝指令另核對架構與通過紀錄。
+
+字元長度上限是上下文整理措施，並非精確 token 計算。靜態檢查核對明確登錄的模組，不代表已解析 JavaScript 的所有動態相依。稽核與保留的技術債見 [架構稽核](docs/AUDIT-2026-10-06.md)。
 
 ## 2026-10-05 新介面與骰子驗證
 
@@ -69,8 +81,7 @@ WebView2 測試在受限執行沙箱內曾停留於本機頁面載入；改以�
 ## 重現
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\desktop\build-desktop.ps1
-.\desktop\dist\Cthulhu-Investigator\Cthulhu-Investigator.exe --self-test
+powershell -NoProfile -ExecutionPolicy Bypass -File .\maintenance\verify.ps1 -Package
 ```
 
 原始碼的 `runtime-tests.html` 可在本機 HTTP 服務下執行規則與模擬 DOM 測試。桌面 `--self-test` 額外注入 `runtime-ui-tests.js` 與 `cinematic-tests.js` 測試真實 DOM、骰子與排版；一般啟動不執行測試，也不開啟開發工具。

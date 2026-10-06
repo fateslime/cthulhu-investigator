@@ -1,4 +1,5 @@
 $ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'maintenance/check.ps1')
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 $gameRoot = $PSScriptRoot
 function Build-Page([string]$file, [string[]]$artKeys) {

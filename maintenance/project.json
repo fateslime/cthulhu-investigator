@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "pages": {
+    "portal.html": {
+      "scripts": [
+        "engine.js",
+        "chronicles-data.js",
+        "story-asylum.js",
+        "story-train.js",
+        "story-tide.js",
+        "story-theatre.js",
+        "story-recaps.js",
+        "chronicles-branches.js",
+        "chronicles-engine.js",
+        "theatre-engine.js",
+        "dialogue-adapter.js",
+        "pressure-data.js",
+        "pressure-engine.js",
+        "field-ui.js",
+        "cinematic.js",
+        "hub-store.js",
+        "legacy-source.js",
+        "portal.js"
+      ],
+      "styles": [
+        "style.css",
+        "field-ui.css",
+        "portal.css",
+        "cinematic.css"
+      ]
+    },
+    "index.html": {
+      "scripts": [
+        "engine.js",
+        "story-recaps.js",
+        "pressure-data.js",
+        "pressure-engine.js",
+        "field-ui.js",
+        "cinematic.js",
+        "app.js"
+      ],
+      "styles": [
+        "style.css",
+        "field-ui.css",
+        "cinematic.css"
+      ]
+    }
+  },
+  "generated": [
+    "legacy-source.js",
+    "Fogharbor-Original.html",
+    "Cthulhu-Play.html",
+    "Fogharbor-Play.html"
+  ],
+  "assets": [
+    "assets/fog.png",
+    "assets/asylum.png",
+    "assets/train.png",
+    "assets/tide.png",
+    "assets/theatre.png"
+  ],
+  "testGroups": [
+    "rules",
+    "ui",
+    "cinematic",
+    "resolutions",
+    "compact"
+  ],
+  "docLimits": {
+    "AGENTS.md": 4500,
+    "docs/STATE.md": 3000,
+    "docs/ARCHITECTURE.md": 10000,
+    "docs/CONTRACTS.md": 9000,
+    "docs/MAINTENANCE.md": 9000,
+    "docs/AUDIT-2026-10-06.md": 8000
+  },
+  "areas": {
+    "overview": {
+      "summary": "先讀目前狀態及架構圖；依任務選一個領域，不讀整個儲存庫。",
+      "files": [],
+      "tests": [],
+      "docs": [
+        "docs/ARCHITECTURE.md"
+      ]
+    },
+    "ui": {
+      "summary": "兩個 controller 共用 FieldUI / Cinema。保留單一頁面捲動、固定操作入口、原作 iframe 相容與純呈現骰子。",
+      "files": [
+        "portal.html",
+        "index.html",
+        "portal.js",
+        "app.js",
+        "field-ui.js",
+        "field-ui.css",
+        "cinematic.js",
+        "cinematic.css",
+        "style.css",
+        "portal.css"
+      ],
+      "tests": [
+        "ui-smoke.js",
+        "portal-smoke.js",
+        "runtime-ui-tests.js",
+        "cinematic-tests.js"
+      ],
+      "docs": [
+        "docs/CONTRACTS.md"
+      ]
+    },
+    "rules": {
+      "summary": "Fog 是共享 CoC 核心與原作狀態機；Chronicles 使用 Fog 並管理長篇進度。改規則時也查危機包裝。",
+      "files": [
+        "engine.js",
+        "chronicles-engine.js"
+      ],
+      "tests": [
+        "tests.js",
+        "chronicles-tests.js",
+        "expansion-tests.js",
+        "pressure-tests.js"
+      ],
+      "docs": [
+        "docs/CONTRACTS.md"
+      ]
+    },
+    "stories": {
+      "summary": "先讀單篇 story 檔及 ChroniclesData 工廠；新故事還要登錄入口、資產、危機、存檔驗證與結局。",
+      "files": [
+        "chronicles-data.js",
+        "story-asylum.js",
+        "story-train.js",
+        "story-tide.js",
+        "story-theatre.js",
+        "chronicles-branches.js",
+        "story-recaps.js"
+      ],
+      "tests": [
+        "chronicles-tests.js",
+        "expansion-tests.js",
+        "pressure-tests.js"
+      ],
+      "docs": [
+        "docs/ARCHITECTURE.md"
+      ]
+    },
+    "pressure": {
+      "summary": "Pressure 在載入時包裝 Fog、Chronicles 與 Theatre；勿重複載入或用額外 UI 計時器推進時間。",
+      "files": [
+        "pressure-data.js",
+        "pressure-engine.js",
+        "field-ui.js"
+      ],
+      "tests": [
+        "pressure-tests.js"
+      ],
+      "docs": [
+        "CRISIS-SYSTEM.md",
+        "docs/CONTRACTS.md"
+      ]
+    },
+    "saves": {
+      "summary": "保留版本與 storage key；匯入先驗證、採新增檔案。原作 iframe 以 postMessage 同步外層 profile。",
+      "files": [
+        "hub-store.js",
+        "portal.js",
+        "app.js",
+        "engine.js",
+        "chronicles-engine.js",
+        "pressure-engine.js"
+      ],
+      "tests": [
+        "tests.js",
+        "chronicles-tests.js",
+        "expansion-tests.js",
+        "portal-smoke.js",
+        "runtime-ui-tests.js"
+      ],
+      "docs": [
+        "docs/CONTRACTS.md"
+      ]
+    },
+    "dialogue": {
+      "summary": "Theatre 管理解謎與離線對話，DialogueAdapter 只回傳文本；載入在危機 wrapper 前。",
+      "files": [
+        "theatre-engine.js",
+        "dialogue-adapter.js",
+        "story-theatre.js"
+      ],
+      "tests": [
+        "dialogue-tests.js",
+        "expansion-tests.js"
+      ],
+      "docs": [
+        "AI-DIALOGUE.md",
+        "docs/CONTRACTS.md"
+      ]
+    },
+    "desktop": {
+      "summary": "Windows WinForms/WebView2 薄殼；測試獨立 profile。不得改固定 virtual host 或刪使用者資料。",
+      "files": [
+        "desktop/Program.cs",
+        "desktop/TestResults.cs",
+        "desktop/App.config",
+        "desktop/app.manifest",
+        "desktop/build-desktop.ps1",
+        "desktop/package.ps1",
+        "desktop/START-HERE.txt"
+      ],
+      "tests": [
+        "runtime-tests.html",
+        "runtime-ui-tests.js",
+        "cinematic-tests.js",
+        "maintenance/tests.ps1"
+      ],
+      "docs": [
+        "docs/MAINTENANCE.md"
+      ]
+    },
+    "build": {
+      "summary": "入口 HTML 宣告載入順序；build-portal 內嵌 JS/CSS/PNG 與原作。生成檔禁止手改。",
+      "files": [
+        "build.ps1",
+        "build-portal.ps1",
+        "desktop/build-desktop.ps1",
+        "desktop/package.ps1"
+      ],
+      "tests": [
+        "maintenance/tests.ps1"
+      ],
+      "docs": [
+        "docs/MAINTENANCE.md"
+      ]
+    },
+    "tests": {
+      "summary": "完整驗證是 maintenance/verify.ps1；Node runners 僅部分測試，不能當成完整通過。",
+      "files": [
+        "runtime-tests.html",
+        "tests.html",
+        "chronicles-tests.html",
+        "expansion-tests.html",
+        "run-tests.js",
+        "run-chronicles-tests.js"
+      ],
+      "tests": [
+        "tests.js",
+        "chronicles-tests.js",
+        "expansion-tests.js",
+        "pressure-tests.js",
+        "ui-smoke.js",
+        "portal-smoke.js",
+        "dialogue-tests.js",
+        "runtime-ui-tests.js",
+        "cinematic-tests.js"
+      ],
+      "docs": [
+        "docs/MAINTENANCE.md",
+        "TEST-REPORT.md"
+      ]
+    },
+    "maintenance": {
+      "summary": "維護 manifest / 指令 / 短交接文件；先跑維護工具自身測試。normalize-traditional 為舊批次轉字工具，勿當常規建置執行。",
+      "files": [
+        "maintenance/project.json",
+        "maintenance/common.ps1",
+        "maintenance/check.ps1",
+        "maintenance/context.ps1",
+        "maintenance/verify.ps1",
+        "maintenance/tests.ps1",
+        "normalize-traditional.ps1"
+      ],
+      "tests": [
+        "maintenance/tests.ps1"
+      ],
+      "docs": [
+        "docs/MAINTENANCE.md",
+        "docs/AUDIT-2026-10-06.md"
+      ]
+    }
+  }
+}

@@ -1,5 +1,8 @@
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
+. (Join-Path $root 'maintenance/common.ps1')
+& (Join-Path $root 'maintenance/check.ps1')
+Assert-VerifiedBuild $root (Get-ProjectManifest $root)
 $dist = Join-Path $PSScriptRoot 'dist/Cthulhu-Investigator'
 $release = Join-Path $PSScriptRoot 'dist/release'
 $stage = Join-Path $release ('stage-' + [Guid]::NewGuid().ToString('N'))
